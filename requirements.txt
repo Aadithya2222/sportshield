@@ -5,4 +5,3 @@ opencv-python
 imagehash
 pillow
 numpy
-google-genai
