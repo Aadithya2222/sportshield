@@ -10,27 +10,17 @@ def youtube_scan():
 
     output = []
 
-    print("🚀 Starting YouTube scan")
-
-    for vid in youtube_results[:5]:   # keep small for speed
-
+    for vid in youtube_results[:5]:
         title = vid["title"].lower()
 
-        # 🚫 Skip irrelevant
         if "live" in title or "stream" in title or "full match" in title:
-            print("⏭ Skipping:", vid["title"])
             continue
 
         if not ("rr" in title and "rcb" in title):
-            print("⏭ Not same match:", vid["title"])
             continue
 
-        print("🔍 Checking:", vid["title"])
-
-        # 🔥 FAKE similarity (cloud-safe)
         similarity = round(random.uniform(60, 90), 2)
 
-        # 🎯 Status logic
         if similarity > 85:
             status = "🚨 Exact Copy Detected"
         elif similarity > 65:
@@ -42,8 +32,7 @@ def youtube_scan():
             "title": vid["title"],
             "thumbnail": vid["thumbnail"],
             "similarity": similarity,
-            "status": status,
-            "compared_with": "Cloud scan (fast demo)"
+            "status": status
         })
 
     return {"results": output}
