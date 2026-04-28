@@ -6,3 +6,4 @@ imagehash
 pillow
 numpy
 requests
+python-multipart
