@@ -5,3 +5,4 @@ opencv-python
 imagehash
 pillow
 numpy
+requests
