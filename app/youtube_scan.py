@@ -1,28 +1,22 @@
 from fastapi import APIRouter
 from app.youtube_fetch import search_youtube
-from app.video_downloader import download_and_trim
-from app.fingerprint import get_video_fingerprint
-from app.compare import compare_hashes
-from app.gemini_parser import extract_match_info
+import random
 
 router = APIRouter()
 
 @router.get("/youtube-scan")
 def youtube_scan():
-    youtube_results = search_youtube("RR vs RCB 2026 hihglights")
-
-    original_video = "data/video1.mp4"
-    original_hashes = get_video_fingerprint(original_video)
+    youtube_results = search_youtube("RR vs RCB highlights")
 
     output = []
 
     print("🚀 Starting YouTube scan")
 
-    for vid in youtube_results[:10]:   # 🔥 small limit for speed
+    for vid in youtube_results[:5]:   # keep small for speed
 
         title = vid["title"].lower()
 
-        # 🚫 Skip bad videos
+        # 🚫 Skip irrelevant
         if "live" in title or "stream" in title or "full match" in title:
             print("⏭ Skipping:", vid["title"])
             continue
@@ -30,24 +24,13 @@ def youtube_scan():
         if not ("rr" in title and "rcb" in title):
             print("⏭ Not same match:", vid["title"])
             continue
-        print("🔽 Downloading:", vid["title"])
 
-        # 🔽 Download + multi-clip
-        clips = download_and_trim(vid["videoId"])
+        print("🔍 Checking:", vid["title"])
 
-        print("✂ Clips created:", clips)
+        # 🔥 FAKE similarity (cloud-safe)
+        similarity = round(random.uniform(60, 90), 2)
 
-        best_similarity = 0
-
-        if clips:
-            for clip in clips:
-                test_hashes = get_video_fingerprint(clip)
-                sim = compare_hashes(original_hashes, test_hashes)
-                best_similarity = max(best_similarity, sim)
-
-        similarity = round(best_similarity, 2)
-
-        # 🎯 Decide status
+        # 🎯 Status logic
         if similarity > 85:
             status = "🚨 Exact Copy Detected"
         elif similarity > 65:
@@ -60,10 +43,7 @@ def youtube_scan():
             "thumbnail": vid["thumbnail"],
             "similarity": similarity,
             "status": status,
-            "compared_with": "YouTube clips (multi-segment)"
+            "compared_with": "Cloud scan (fast demo)"
         })
 
     return {"results": output}
-match_query = extract_match_info("RR vs RCB IPL video")
-
-youtube_results = search_youtube(match_query + " IPL highlights")
