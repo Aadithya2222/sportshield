@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+yt-dlp
+opencv-python
+imagehash
+pillow
+numpy
+google-genai
